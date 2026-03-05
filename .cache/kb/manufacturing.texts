@@ -1,0 +1,9 @@
+Standard Operating Procedure (SOP): Line Start - Verify torque driver calibration within last 30 days - Inspect safety gates and interlocks; E‑stop test before first unit - Preheat reflow oven to vali
+ reflow oven to validated profile; confirm thermocouple readings within ±2°C  Quality Gates - Post-board assembly AOI; rejects to rework station 2 - Record lot numbers for traceability; attach to batc
+lity; attach to batch record  Safety - PPE enforced; ESD straps must pass continuity checks
+Batch Record BR‑221 and Deviation Summary - Batch BR‑221 produced 480 units; AOI fail rate 1.7% due to solder bridging on U4 - Deviation DEV‑33 opened for station 3 nozzle misalignment; corrective act
+ment; corrective action mid-batch - Final yield 98.1%; reworked units passed functional test after nozzle realignment and reflow profile tweak
+CAPA CA‑12: Packaging Mislabel Problem - Incorrect accessory code printed on 2% of A2 bundle packaging  Root Cause - Template mapping in print server reverted to v1.0 after maintenance restart  Correc
+ance restart  Corrective Action - Lock configuration to v1.2 and add checksum verification before print jobs  Preventive Action - Weekly audit of print templates; automated alerts on version drift
+Maintenance and Calibration Schedule - Torque drivers: monthly calibration; retain certificates for 24 months - Reflow ovens: quarterly profile validation and thermocouple calibration - Inline barcode
+ion - Inline barcode scanners: weekly cleaning and functional test; replace after 500k scans or performance degradation

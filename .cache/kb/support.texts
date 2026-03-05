@@ -1,0 +1,13 @@
+Support Runbook: Network Timeouts (Error E42) Symptoms - Intermittent data transmission failures; UI shows E42.  Root Causes - Unstable Wi‑Fi signal, aggressive roaming - DHCP lease renewal collisions
+e renewal collisions during peak hours - Firmware v1.1 Wi‑Fi driver bug under interference  Resolution 1) Validate RSSI > −65 dBm; disable band steering temporarily 2) Increase DHCP lease duration 3) 
+P lease duration 3) Apply firmware v1.2 patch for driver fixes 4) Verify LTE-M fallback APN profiles  Escalation - Collect diag logs with “netdiag –all”; attach to ticket; escalate referencing KB case
+ referencing KB case SUP-1108.
+Troubleshooting Guide: Battery Health Reporting Symptoms - Rapid drops or fluctuating reporting during charging.  Diagnostics - Check ADC calibration value (March builds affected) - Review charge cycl
+- Review charge cycles and temperature profile in health logs  Remediation - Install patch BH-2024-03 to recalibrate ADC - Perform one full discharge/charge cycle to re-baseline - If persistent, issue
+If persistent, issue RMA (reason BH-CAL-OFFSET)  Prevention - Updated factory calibration adds temperature-compensated step.
+FAQ and Quick Procedures - Soft reset: Hold power 10 seconds - Collect logs: “diag collect –full” - Recommended Wi‑Fi: WPA2-Enterprise with cert-based auth - NFC instability near machinery: EMI; consi
+achinery: EMI; consider shielding and antenna repositioning.
+Incident Management and SLAs - Sev1: 15-minute acknowledgment; 4-hour workaround target - Sev2: 30-minute acknowledgment; next-business-day remediation plan  Escalation Paths Tier 1 → Tier 2 → Enginee
+1 → Tier 2 → Engineering on-call  PIRs - Required for Sev1 within five business days; include root cause, impact, corrective actions.
+Support Article SUP-1242: ADC Calibration Offset Issue - Battery health reporting inconsistencies on March builds.  Fix - Apply BH-2024-03; verify calibration via health log diagnostics.  Verification
+stics.  Verification - Confirm stable reporting across a full discharge/charge cycle; update fleet policy accordingly.

@@ -2,9 +2,10 @@ from langgraph.graph import StateGraph, START, END
 from myapp.state import RagState
 from myapp.routing import router_node
 from myapp.topk_reranker import topk_node
-from myapp.retrieval import retrieve_single, retrieve_complex_parallel
+from myapp.retrievers import retrieve_single, retrieve_complex_parallel
 from myapp.synthesis import synthesize
 from myapp.decomposer import decompose_query
+from myapp.judge import judge_node
 import operator
 
 
@@ -18,6 +19,9 @@ def routing(state: RagState) -> str:
         return "retrieve_single"
     else:
         return "synthesize"
+    
+def evaluation(state: RagState) -> str:
+    return state.get("evaluation", {}).get("verdict", "continue")
 
 def build_app():
     graph = StateGraph(
@@ -33,6 +37,7 @@ def build_app():
     graph.add_node("decompose_query", decompose_query)
     graph.add_node("topk_node", topk_node)
     graph.add_node("synthesize", synthesize)
+    graph.add_node("judge", judge_node)
 
     graph.add_edge(START, "router")
 
@@ -41,10 +46,18 @@ def build_app():
                                  "decompose_query": "decompose_query", 
                                  "retrieve_single": "retrieve_single", 
                                  "synthesize": "synthesize", }, )
-    graph.add_edge("retrieve_single", "synthesize")
+    graph.add_conditional_edges(
+    "judge",
+    evaluation,
+    {
+        "continue": "synthesize",
+        "reevaluate": "router",
+    },
+)
+    graph.add_edge("retrieve_single", "judge")
     graph.add_edge("decompose_query", "retrieve_complex_parallel")
     graph.add_edge("retrieve_complex_parallel", "topk_node")
-    graph.add_edge("topk_node", "synthesize")
+    graph.add_edge("topk_node", "judge")
     graph.add_edge("synthesize", END)
 
 

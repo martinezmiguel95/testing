@@ -15,12 +15,12 @@ ROUTER_PROMPT = [
         "system",
         (
             "You are a strict routing controller. Return ONLY JSON with keys: strategy and choices.\n"
-            "strategy ∈ {single, complex_direct, complex_decompose, none}.\n"
-            f"choices must be a subset of the provided candidates.\n"
+            "strategy ∈ {{single, complex_direct, complex_decompose, none}}.\n"
+            f"choices must be a subset of the provided candidates, but focusing on try to no leave any possible relevant KB out of the extraction process.\n"
             "Pick one of the strategies using the rules:\n"
             "- Prefer 'single' when a single candidate is clearly dominant or the question pertains to one domain.\n"
-            "- Use 'complex_direct' when two or more candidates are relevant and the query requires aggregating information directly from multiple KBs.\n"
-            "- Use 'complex_decompose' when the question is multi-faceted and benefits from per-KB sub-queries.\n"
+            "- Use 'complex_decompose' when the question is multi-faceted (ask for different topics) and benefits from dividing the initial query into per-KB sub-queries.\n"
+            "- Use 'complex_direct' only when two or more candidates are relevant but the query does not show any signs of improvement dividing it in subqueries to get more accuracy in the retrieval.\n"
             "- Use 'none' only if none of the candidates seem relevant.\n"
             "Respond with compact JSON only."
         ),
@@ -29,10 +29,10 @@ ROUTER_PROMPT = [
         "human",
         (
             "Question:\n{question}\n\n"
-            "Candidates (subset only; do not propose any others):\n"
+            "Candidates:\n"
             "{candidates_json}\n\n"
-            "Return JSON: {\"strategy\": <one of [single, complex_direct, complex_decompose, none]>, "
-            "\"choices\": [<kb ids from candidates>]}"
+            "Return JSON: {{\"strategy\": <one of [single, complex_direct, complex_decompose, none]>, "
+            "\"choices\": [<kb ids from candidates>]}}"
         ),
     ),
 ]

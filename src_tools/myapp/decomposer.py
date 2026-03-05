@@ -1,21 +1,14 @@
 from langchain_openai import ChatOpenAI
-from myapp.utils.router.constants import ROUTER_MODEL_ID, ROUTER_TEMPERATURE
 from langchain_core.prompts import ChatPromptTemplate
 import json
 from myapp.kb_data import KB_REGISTRY
 from myapp.state import RagState
+from myapp.utils.decomposer.constants import DECOMPOSER_PROMPT, DECOMPOSER_MODEL_ID, DECOMPOSER_TEMPERATURE
+from myapp.utils.decomposer.decomposer_func import create_kb_candidates_small
 
-llm = ChatOpenAI(model=ROUTER_MODEL_ID, temperature=ROUTER_TEMPERATURE)
+llm = ChatOpenAI(model=DECOMPOSER_MODEL_ID, temperature=DECOMPOSER_TEMPERATURE)
 
-PROMPT = ChatPromptTemplate.from_messages([
-    ("system",
-     "You are a decomposer that base on a human query and a dictionary of possible Knowledges bases (KBs) from which extract information to respond, create subqueries mapped specific KBs."
-     + "For that goal step by step reason and analyze the relevance of each KB with the query and try to find the best way to divide the initial query in subqueries to maximize the relevance between subquery - KB.\n"
-     + "ONLY return a JSON with the list of the appropiate subqueries following this format:\n"
-     + "{{subquery}}:{{KB}}"
-     + "Knowledge Bases:\n" + "\n".join([f"- {k}: {desc}" for k, (_, desc) in KB_REGISTRY.items()])),
-    ("human", "{query}")
-])
+PROMPT = ChatPromptTemplate.from_messages(DECOMPOSER_PROMPT)
 
 def decompose_query(state: RagState) -> RagState:
     """
@@ -46,9 +39,8 @@ def decompose_query(state: RagState) -> RagState:
 
     msg = PROMPT | llm
     query = state["messages"][-1].content
-    raw = msg.invoke({"query": query}).content
-
-    query = state["messages"][-1].content
+    kb_candidates = create_kb_candidates_small(kb_registry=KB_REGISTRY)
+    raw = msg.invoke({"query": query, "candidates_json": kb_candidates}).content
 
     print(f"Response for the decomposer: {raw}")
 
@@ -57,16 +49,16 @@ def decompose_query(state: RagState) -> RagState:
     except Exception as e:
         raise SyntaxError(f"Error generating the subqueries: {e}")
     
-    # Validate shape and KB names
-    subqs = data.get("subqueries", [])
-    if not isinstance(subqs, list):
-        subqs = []
+#    subqs = data.get("subqueries", [])
+    print(f"SUBQUERIES: {data}")
+    if not isinstance(data, dict):
+        data = {}
     valid_kbs = set(KB_REGISTRY.keys())
     clean = []
-    for item in subqs:
-        kb = item.get("kb")
-        q = item.get("query")
+    for q, kb in data.items():
         if isinstance(kb, str) and kb in valid_kbs and isinstance(q, str) and q.strip():
             clean.append({"kb": kb, "query": q.strip()})
+            
+    print(f"SUBQUERIES: {clean}")
 
     return {"subqueries": clean}

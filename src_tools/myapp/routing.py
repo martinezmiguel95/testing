@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from myapp.kb_data import KB_REGISTRY
 from myapp.state import RagState
 from myapp.utils.router.constants import ROUTER_PROMPT, ALLOWED, ROUTER_MODEL_ID, ROUTER_TEMPERATURE
-from myapp.utils.router.routing_func import score_kbs, single_decision, create_kb_candidates
+from myapp.utils.router.routing_func import score_kbs, single_decision, create_kb_candidates,_prioritize_ranked
 
 load_dotenv()
 
@@ -23,7 +23,43 @@ def router_node(state: RagState) -> RagState:
         return {"route_strategy": "none", "route_choices": []}
     
     question = state["messages"][-1].content
+    retries = state.get("retries", 0)
+    evaluation = (state.get("evaluation") or {})
+    verdict = str(evaluation.get("verdict", "continue")).lower()
     ranked = score_kbs(question, kb_registry=KB_REGISTRY)
+
+    if not ranked:
+        return {"route_strategy": "none", "route_choices": [], "subqueries": []}
+
+# If judge asked for reevaluation, incorporate guidance
+    if verdict == "reevaluate":
+        suggested_subqueries = evaluation.get("suggested_subqueries") or []
+        kbs_to_prioritize = evaluation.get("kbs_to_prioritize") or []
+
+        # Reorder ranked with judged KBs first
+        ranked = _prioritize_ranked(ranked, kbs_to_prioritize)
+
+        # If previous attempt was single, broaden to complex; else keep complex
+        prev_strategy = state.get("route_strategy", "none")
+        if prev_strategy == "single":
+            # Move to complex; prefer decompose if subqueries are present
+            if suggested_subqueries:
+                # Route to complex_decompose and pass subqueries
+                choices = [kb for kb, _ in ranked[: min(3, len(ranked))]]
+                return {
+                "route_strategy": "complex_decompose",
+                "route_choices": choices,
+                "subqueries": suggested_subqueries,
+                "judge_retries": retries + 1
+                }
+            else:
+                choices = [kb for kb, _ in ranked[: min(2, len(ranked))]]
+                return {
+                "route_strategy": "complex_direct",
+                "route_choices": choices,
+                "subqueries": [],
+                "judge_retries": retries + 1
+                }
       
     print(f"Scores of KBs: {ranked}")
     

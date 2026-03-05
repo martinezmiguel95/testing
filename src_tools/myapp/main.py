@@ -18,4 +18,4 @@ async def run_example(msg):
         f.write(png_bytes)
 
 if __name__ == "__main__":
-    asyncio.run(run_example(msg=[HumanMessage(content="We need information about Professional services and delivery: engagement scopes and implementation guides.")]))
+    asyncio.run(run_example(msg=[HumanMessage(content="We need information about CAPA CA‑12, SKU P-100 Technical Specifications and Network Timeouts")]))

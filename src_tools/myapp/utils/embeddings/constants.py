@@ -1,0 +1,3 @@
+EMB_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+DEFAULT_CHUNK_SIZE = 200   
+DEFAULT_CHUNK_OVERLAP = 20
