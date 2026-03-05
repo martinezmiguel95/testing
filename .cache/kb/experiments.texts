@@ -1,0 +1,10 @@
+Experiment E17: Sensor Fusion Tuning Hypothesis - Kalman filter parameter adjustments raise F1 by ≥3%.  Method - DS‑Alpha dataset; 10,000 labeled sequences; multiple temperatures (10–35°C) - Ten repea
+10–35°C) - Ten repeated trials with randomized seeds  Results - +2.7% mean F1 with 95% CI [2.2%, 3.1%]; strongest gains in high-vibration conditions - Side effect: +3% CPU utilization under burst work
+ion under burst workloads; mitigated in firmware v1.2.
+Protocol Template: Environmental Calibration Preconditions - Device temperature within 23–27°C; allow 10 minutes for thermal stabilization  Steps - Initiate baseline capture - Perform controlled movem
+orm controlled movements for 60 seconds - Verify variance thresholds - Store calibration profile  Instrumentation - Bench power supply to avoid battery-induced voltage fluctuations  Reproducibility - 
+  Reproducibility - Document firmware version, accessory model, ambient noise profile.
+Results Summary: OTA Efficiency Study Objective - Measure impact of OTA delta updates vs full-image updates  Findings - Delta updates reduced payload by 62% and cut maintenance windows by 35% in stage
+dows by 35% in staged deployments  Constraints - Delta generation less effective when base firmware deviates >2 versions; recommend aligned baselines.
+Data Handling and Compliance Notes - Datasets anonymized and stored with lineage metadata (dataset ID, collection date, sensor configs) - Access controlled via project-based roles - Sensitive environm
+- Sensitive environment recordings require approval and encryption at rest with KMS-managed keys.

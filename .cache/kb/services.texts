@@ -1,0 +1,9 @@
+Engagement Blueprint: 6‑Week Onboarding Milestones - Week 1: Discovery + architecture workshop - Weeks 2–3: Pilot to 10% of fleet; success criteria (uptime, latency, data integrity) - Weeks 4–5: Rollo
+) - Weeks 4–5: Rollout in staggered waves; monitoring + feedback loop - Week 6: Handover and knowledge transfer; schedule health checks  Roles (RACI) - PM (client-facing), solution architect, field en
+ architect, field engineer, customer success manager  Outcomes - Runbooks, acceptance sign-off, 90-day optimization plan
+SOW Template v3: Deliverables and Acceptance Deliverables - Solution design doc, deployment checklist, configuration baseline, training session recordings  Acceptance Criteria - Devices online for 7 c
+vices online for 7 consecutive days; error rates <0.5%; baselines stored in CMDB  Change Control - Scope changes via CR form with impact assessment and approval chain
+Customer Success Playbook - Quarterly Business Reviews (QBRs): KPIs, risk register, roadmap alignment - Proactive alerts on telemetry thresholds (battery health, connectivity failures) - Escalation ch
+res) - Escalation channel tied to premium support SLAs
+Post-Deployment Health Checks KPIs - 99.5% device availability; median latency <150 ms; ticket volume downtrend  Actions - Firmware drift remediation; accessory failure pattern analysis; user training
+lysis; user training refreshers if error classes spike
